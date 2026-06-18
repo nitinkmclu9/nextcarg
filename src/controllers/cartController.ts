@@ -97,7 +97,7 @@ export const updateCartItem = asyncHandler(async (req: AuthRequest, res: Respons
   }
 
   const itemIndex = cart.items.findIndex(
-    (item) => item._id.toString() === req.params.itemId
+    (item: any) => (item as any)._id?.toString() === req.params.itemId
   );
 
   if (itemIndex === -1) {
@@ -131,7 +131,7 @@ export const removeFromCart = asyncHandler(async (req: AuthRequest, res: Respons
   }
 
   cart.items = cart.items.filter(
-    (item) => item._id.toString() !== req.params.itemId
+    (item: any) => (item as any)._id?.toString() !== req.params.itemId
   );
 
   await cart.save();
