@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
+import dns from 'dns';
 import cookieParser from 'cookie-parser';
 import rateLimit from 'express-rate-limit';
 
@@ -20,6 +21,9 @@ import { errorHandler } from './middleware/errorHandler';
 
 dotenv.config();
 
+// Force Google DNS
+dns.setServers(['8.8.8.8', '8.8.4.4']);
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -32,8 +36,8 @@ app.use(cors({
 
 // Rate limiting
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100 // limit each IP to 100 requests per windowMs
+  windowMs: 15 * 60 * 1000,
+  max: 100
 });
 app.use('/api/', limiter);
 
@@ -59,6 +63,11 @@ app.use('/api/reviews', reviewRoutes);
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'NexCart API is running' });
+});
+
+// Root route
+app.get('/', (req, res) => {
+  res.send('NexCart Backend Running 🚀');
 });
 
 // Error handling
